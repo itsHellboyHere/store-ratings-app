@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from '../api/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useAuthContext } from '../context/AuthContext';
 
 const ChangePassword = () => {
     const [loading, setLoading] = useState(false);
@@ -9,7 +10,14 @@ const ChangePassword = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
+    const { authUser, setAuthUser } = useAuthContext();
 
+    // Update user
+    const updateAuthUser = (updates) => {
+        const updatedUser = { ...authUser, ...updates };
+        setAuthUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -25,6 +33,8 @@ const ChangePassword = () => {
             const res = await axios.put('/users/change-password', { newPassword });
 
             toast.success(res.data.message);
+
+            updateAuthUser({ mustChangePassword: false });
             navigate('/dashboard');
         } catch (err) {
             console.error("Password update error:", err);
