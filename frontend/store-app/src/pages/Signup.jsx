@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from '../api/axios'
 import toast from 'react-hot-toast'
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Navigate, useNavigate } from 'react-router-dom'
 const Signup = () => {
     const navigate = useNavigate()
@@ -12,6 +13,7 @@ const Signup = () => {
     })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
+    const [showPassword, setShowPassword] = useState(false);
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -20,6 +22,9 @@ const Signup = () => {
             [name]: value
         }));
     }
+    const togglePasswordVisibility = () => {
+        setShowPassword((prev) => !prev);
+    };
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
@@ -59,15 +64,25 @@ const Signup = () => {
                     className="w-full p-2 border rounded"
                     required
                 />
-                <input
-                    name='password'
-                    type="password"
-                    value={user.password}
-                    onChange={handleChange}
-                    placeholder="Enter your Password"
-                    className="w-full p-2 border rounded"
-                    required
-                />
+                <div className="relative">
+                    <input
+                        name='password'
+                        type={showPassword ? "text" : "password"}
+                        value={user.password}
+                        onChange={handleChange}
+                        placeholder="Password"
+                        className="w-full p-2 border rounded pr-10"
+                        required
+                    />
+                    <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute right-2 top-3 text-gray-600"
+                        tabIndex={-1}
+                    >
+                        {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                    </button>
+                </div>
                 <input
                     name='address'
                     type="text"
