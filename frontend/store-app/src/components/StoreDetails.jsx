@@ -2,13 +2,14 @@ import axios from '../api/axios';
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom';
 import { renderStars } from "../utils/star"
+import { useAuthContext } from '../context/AuthContext';
 const StoreDetails = () => {
     const [store, setStore] = useState(null)
     const [userRating, setUserRating] = useState('');
     const { id } = useParams();
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null);
-
+    const { authUser } = useAuthContext()
     const fetchStoreDetails = async () => {
         try {
             setLoading(true)
@@ -46,7 +47,17 @@ const StoreDetails = () => {
             setLoading(false)
         }
     }
-    if (loading) return <p className="p-8">Loading store...</p>;
+    if (loading) return (
+        <main className="max-w-2xl mx-auto p-6">
+            <div className="space-y-4 ">
+                {[...Array(5)].map((_, i) => (
+                    <div
+                        key={i}
+                        className="mt-6 w-full h-10 bg-gray-200 rounded animate-pulse"
+                    ></div>
+                ))}
+            </div>
+        </main>)
     if (!store) return <p>Store not found</p>;
     return (
         <main className="max-w-2xl mx-auto p-6">
@@ -65,15 +76,21 @@ const StoreDetails = () => {
                     </span>{" "}
                     {renderStars(Number(store.averageRating))}
                 </p>
-                <p className="text-gray-700 mb-4">
-                    <span className="font-semibold">Your Rating:</span>{" "}
-                    <span className={`ml-1 font-semibold ${getRatingColor(Number(store.userRating))}`}>
-                        {store.userRating}
-                    </span>{" "}
-                    {renderStars(Number(store.userRating))}
-                </p>
-                <div className="mt-6">
-                    <label htmlFor="rating" className="block font-medium">Your Rating (1-5):</label>
+                {['OWNER', 'ADMIN'].includes(authUser?.role) && (
+                    <p className="text-gray-700">
+                        <span className="font-semibold">Owner Email:</span> {store.ownerEmail}
+                    </p>
+                )}
+                {authUser?.role === "USER" && (
+                    <p className="text-gray-700 mb-4">
+                        <span className="font-semibold">Your Rating:</span>{" "}
+                        <span className={`ml-1 font-semibold ${getRatingColor(Number(store.userRating))}`}>
+                            {store.userRating}
+                        </span>{" "}
+                        {renderStars(Number(store.userRating))}
+                    </p>)}
+                {authUser?.role === "USER" && (<div className="mt-6">
+                    <label htmlFor="rating" className="block font-medium">Rate (1-5):</label>
                     <input
                         id="rating"
                         type="number"
@@ -89,7 +106,7 @@ const StoreDetails = () => {
                     >
                         {store.userRating ? 'Update Rating' : 'Submit Rating'}
                     </button>
-                </div>
+                </div>)}
             </div>
 
         </main>

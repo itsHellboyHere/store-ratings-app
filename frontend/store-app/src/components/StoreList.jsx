@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import axios from '../api/axios'
+import { Link } from 'react-router-dom';
 const StoreList = () => {
     const [stores, setStores] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    // console.log(stores)
     const fetchStores = async () => {
         try {
             setLoading(true)
@@ -61,9 +63,13 @@ const StoreList = () => {
                                 </td>
                             </tr>
                         ) : (
-                            stores.map((store, i) => (
-                                <tr key={i} className="hover:bg-gray-50">
-                                    <td className="p-2 border">{store.name}</td>
+                            stores.map((store) => (
+                                <tr key={store.id} className="hover:bg-gray-50">
+                                    <td className="p-2 border">
+                                        <Link to={`/stores/${store.id}`} className="text-blue-600 hover:underline">
+                                            {store.name}
+                                        </Link>
+                                    </td>
                                     <td className="p-2 border">{store.email}</td>
                                     <td className="p-2 border">{store.address}</td>
                                     <td className="p-2 border text-yellow-600 font-semibold">{store.avgRating}</td>

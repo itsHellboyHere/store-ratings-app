@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useAuthContext } from '../context/AuthContext';
 import axios from '../api/axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const ChangePassword = () => {
@@ -43,6 +43,7 @@ const ChangePassword = () => {
         <main className='max-w-md mx-auto p-10'>
             <h3 className='text-xl font-bold mb-4 text-gray-500'>Change Your Password</h3>
             {error && <p className="text-red-600">{error}</p>}
+            <Link to='/dashboard' className='text-blue-600 hover:unerline mb-5 inline-block'>&larr; Back to Dashboard</Link>
             <form className='space-y-4' onSubmit={handleSubmit}>
 
                 <input

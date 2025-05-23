@@ -22,9 +22,9 @@ const Navbar = () => {
     return (
         <nav className="bg-emerald-100 text-slate-700 px-4 py-3 shadow-md">
             <div className="flex justify-between items-center max-w-7xl mx-auto">
-                {/* Brand */}
-                <Link to="/dashboard" className="font-bold text-xl text-emerald-800">
-                    Store App
+
+                <Link to="/dashboard" className="font-semibold text-xl text-emerald-700 hover:text-emerald-500">
+                    store<span className='text-xl text-sky-500 font-bold hover:text-sky-700'>App</span>
                 </Link>
 
                 {/* Mobile Toggle Button */}
@@ -40,20 +40,24 @@ const Navbar = () => {
                 <div className="hidden md:flex gap-6 items-center">
                     {authUser ? (
                         <>
-                            <span className="capitalize text-sm bg-white px-2 py-1 rounded border">
+                            <span className="capitalize text-sm bg-white px-2 py-1 rounded border font-mono ">
                                 Role: {authUser.role}
                             </span>
                             {authUser.role === 'ADMIN' && (
                                 <>
-                                    <Link to="/admin/users" className="hover:underline">Users</Link>
-                                    <Link to="/admin/stores" className="hover:underline">Stores</Link>
-                                    <Link to="/admin/create-user" className="hover:underline">Create User</Link>
-                                    <Link to="/admin/create-store" className="hover:underline">Add Store</Link>
+                                    <Link to="/admin/users" className="font-semibold hover:underline">Users</Link>
+                                    <Link to="/admin/stores" className="font-semibold hover:underline">Stores</Link>
+                                    <Link to="/admin/create-user" className="font-semibold hover:underline">Create User</Link>
+                                    <Link to="/admin/create-store" className="font-semibold hover:underline">Add Store</Link>
                                 </>
                             )}
+                            {/* <span className='text-sm px-1 py-1 '>
+                                {authUser.name}</span> */}
+                            <Link to="/change-password" onClick={toggleMenu} className='font-semibold hover:underline'>Change Pass</Link>
                             <button
                                 onClick={handleLogout}
                                 className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                disabled={loading}
                             >
                                 Logout
                             </button>
@@ -72,17 +76,18 @@ const Navbar = () => {
                 <div className="md:hidden flex flex-col gap-4 mt-3 px-2">
                     {authUser ? (
                         <>
-                            <span className="capitalize text-sm bg-white px-2 py-1 rounded border w-fit">
+                            <span className="capitalize text-sm bg-gray-100 px-2 py-1 rounded border w-fit">
                                 Role: {authUser.role}
                             </span>
                             {authUser.role === 'ADMIN' && (
                                 <>
-                                    <Link to="/admin/users" onClick={toggleMenu}>Users</Link>
-                                    <Link to="/admin/stores" onClick={toggleMenu}>Stores</Link>
-                                    <Link to="/admin/create-user" onClick={toggleMenu}>Create User</Link>
-                                    <Link to="/admin/create-store" onClick={toggleMenu}>Add Store</Link>
+                                    <Link to="/admin/users" onClick={toggleMenu} className='font-semibold'>Users</Link>
+                                    <Link to="/admin/stores" onClick={toggleMenu} className='font-semibold'>Stores</Link>
+                                    <Link to="/admin/create-user" onClick={toggleMenu} className='font-semibold'>Create User</Link>
+                                    <Link to="/admin/create-store" onClick={toggleMenu} className='font-semibold'>Add Store</Link>
                                 </>
                             )}
+                            <Link to="/change-password" onClick={toggleMenu} className='font-semibold hover:text-gray-500'>Change Pass</Link>
                             <button
                                 onClick={() => {
                                     handleLogout();

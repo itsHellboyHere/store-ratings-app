@@ -1,11 +1,14 @@
+const { skip } = require("@prisma/client/runtime/library");
 const prisma = require("../utils/prisma")
 
 // get all stores
 // serach with name or address
 const getStores = async (req, res) => {
-    const { search } = req.query;
+    const { search = "", page = 1, limit = 5 } = req.query;
+    const pageSize = parseInt(limit);
+    const pageNumber = parseInt(page);
     try {
-        const stores = await prisma.store.findMany({
+        const [stores, totalCount] = await Promise.all([prisma.store.findMany({
             where: {
                 OR: [
                     { name: { contains: search || "", mode: "insensitive" } },
@@ -16,7 +19,21 @@ const getStores = async (req, res) => {
             include: {
                 ratings: true,
             },
-        });
+            // if pageNo = 1 then first page will skip 0
+            // as (1-1) = 0 * 5 = 0 
+            //  in second (2-1) = 1* 5 = 5 skips .
+            skip: (pageNumber - 1) * pageSize,
+            take: pageSize,
+        }),
+        prisma.store.count({
+            where: {
+                OR: [
+                    { name: { contains: search, mode: "insensitive" } },
+                    { address: { contains: search, mode: "insensitive" } },
+                ],
+            },
+        }),
+        ]);
         const formatted = stores.map((store) => {
             const total = store.ratings.reduce((sum, r) => sum + r.score, 0);
             const average = store.ratings.length > 0 ? total / store.ratings.length : 0;
@@ -28,7 +45,11 @@ const getStores = async (req, res) => {
                 averageRating: average.toFixed(1)
             }
         });
-        res.status(200).json(formatted);
+        res.status(200).json({
+            stores: formatted,
+            totalPages: Math.ceil(totalCount / pageSize),
+            currentPage: pageNumber
+        });
 
     } catch (err) {
         res.status(500).json({ error: "Failed to get Stores" })
@@ -43,7 +64,8 @@ const getStoreDetails = async (req, res) => {
         const store = await prisma.store.findUnique({
             where: { id: storeId },
             include: {
-                ratings: true
+                ratings: true,
+                owner: true,
             },
         });
 
@@ -52,13 +74,15 @@ const getStoreDetails = async (req, res) => {
         const total = store.ratings.reduce((sum, r) => sum + r.score, 0);
         const averageRating = store.ratings.length > 0 ? total / store.ratings.length : 0;
         const userRating = store.ratings.find(r => r.userId === userId);
-
+        const isAdmin = req.user?.role === 'ADMIN';
+        const isOwner = req.user?.id === store.owner?.id;
         res.status(200).json({
             id: store.id,
             name: store.name,
             address: store.address,
             averageRating: averageRating.toFixed(1),
-            userRating: userRating?.score || null
+            userRating: userRating?.score || null,
+            ownerEmail: isAdmin || isOwner ? store.owner?.email : null
         });
     } catch (err) {
         console.log(err)
@@ -124,6 +148,7 @@ const ownerDashBoardDetails = async (req, res) => {
             }));
 
             return {
+                id: store.id,
                 storeName: store.name,
                 address: store.address,
                 averageRating: average.toFixed(1),

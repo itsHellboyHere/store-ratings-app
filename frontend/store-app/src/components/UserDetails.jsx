@@ -62,9 +62,14 @@ const UserDetails = () => {
                     </span>
                 </p>
                 {user.role === 'OWNER' && (
-                    <p className='mt-4 font-semibold text-indigo-600'>
-                        Average Store Ratings: {user.avgStoreRating ?? 'N/A'}
-                    </p>
+                    <>
+                        <p className='mt-4 font-semibold text-indigo-600'>
+                            Average Store Ratings: {user.avgStoreRating ?? 'N/A'}
+                        </p>
+                        <p className='mt-2 font-semibold text-gray-800'>
+                            Total Stores Owned: {user.totalStores}
+                        </p>
+                    </>
                 )}
             </div>
         </main>

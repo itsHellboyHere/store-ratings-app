@@ -8,7 +8,7 @@ app.use(cors({
     origin: ['http://localhost:3000', 'http://localhost:5000']
 
 }));
-// middleware to parse to JSON
+// middleware to parse to JSONs
 app.use(express.json());
 
 // Routes

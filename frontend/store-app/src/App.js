@@ -113,7 +113,7 @@ const App = () => {
           />
           {/* single store route */}
           <Route
-            path='/user/stores/:id'
+            path='/stores/:id'
             element={
               <ProtectedRoute roles={['ADMIN', 'USER', 'OWNER']}>
                 <StoreDetails />

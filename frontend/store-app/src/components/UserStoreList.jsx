@@ -8,17 +8,23 @@ const UserStoreList = () => {
     const [stores, setStores] = useState([]);
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    const fetchStores = async (query = '') => {
+    // pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    const fetchStores = async (query = '', page = 1) => {
         try {
             setLoading(true)
             setError("")
-            const res = await axios.get('/stores', { params: { search: query } });
-            setStores(res.data);
+            const res = await axios.get('/stores', { params: { search: query, page, limit: 5 } });
+            setStores(res.data.stores);
+            setTotalPages(res.data.totalPages);
+            setCurrentPage(res.data.currentPage);
         } catch (err) {
             // console.log(err)
-            setError(err.response?.data.error)
+            setError(err.response?.data.error || "failed to fetch stores")
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
     const getRatingColor = (avg) => {
@@ -28,7 +34,8 @@ const UserStoreList = () => {
     };
 
     const handleSearch = debounce((value) => {
-        fetchStores(value);
+        setCurrentPage(1);
+        fetchStores(value, 1);
     }, 500)
 
     // debounce after key store stop and waits for 500 ms
@@ -53,7 +60,10 @@ const UserStoreList = () => {
             <div className="mb-5">
                 <button
                     className=' bg-blue-600 text-sm text-white p-2 rounded hover:bg-blue-700'
-                    onClick={() => setSearch("")}
+                    onClick={() => {
+                        setSearch("");
+                        fetchStores("", 1);
+                    }}
                 >
                     Clear Search
                 </button>
@@ -62,21 +72,52 @@ const UserStoreList = () => {
                 loading ? (
                     <p>Loading...</p>
                 ) : (
-                    <ul className='space-y-4'>
-                        {stores.map((store) => (
-                            <li className='p-5 border roudned shadow' key={store.id}>
-                                <h3 className='text-lg font-semibold'>{store.name}</h3>
-                                <p className="text-sm text-gray-700">{store.address}</p>
-                                <p className="mt-1 font-semibold mb-2">
-                                    Average Rating:
-                                    <span className={getRatingColor(store.averageRating)}> {store.averageRating}</span>
-                                </p>
-                                <Link to={`/user/stores/${store.id}`} className="text-blue-600 underline font-medium">
-                                    View Details & Rate
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
+                    <>
+                        <ul className='space-y-4'>
+                            {stores.map((store) => (
+                                <li className='p-5 border roudned shadow' key={store.id}>
+                                    <h3 className='text-lg font-semibold'>{store.name}</h3>
+                                    <p className="text-sm text-gray-700">{store.address}</p>
+                                    <p className="mt-1 font-semibold mb-2">
+                                        Average Rating:
+                                        <span className={getRatingColor(store.averageRating)}> {store.averageRating}</span>
+                                    </p>
+                                    <Link to={`/stores/${store.id}`} className="text-blue-600 underline font-medium">
+                                        View Details & Rate
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                        {stores.length > 0 && (
+                            <div className="flex items-center justify-between mt-6">
+                                <button
+                                    onClick={() => {
+                                        if (currentPage > 1) {
+                                            fetchStores(search, currentPage - 1);
+                                        }
+                                    }}
+                                    disabled={currentPage === 1}
+                                    className='bg-gray-100 border rounded py-2 px-2 disabled:opacity-45'
+                                >
+                                    Prev
+                                </button>
+                                <span className="text-sm font-medium text-gray-500">
+                                    Page {currentPage} of {totalPages}
+                                </span>
+                                <button
+                                    onClick={() => {
+                                        if (currentPage < totalPages) {
+                                            fetchStores(search, currentPage + 1);
+                                        }
+                                    }}
+                                    disabled={currentPage === totalPages}
+                                    className='py-2 px-2 rounded border bg-gray-100 disabled:opacity-45'
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
+                    </>
                 )
             }
         </main>

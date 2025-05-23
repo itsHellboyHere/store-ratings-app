@@ -34,6 +34,7 @@ const getAllStores = async (req, res) => {
                 : store.ratings.reduce((sum, r) => sum + r.score, 0) / totalRatings;
 
             return {
+                id: store.id,
                 name: store.name,
                 email: store.email,
                 address: store.address,
@@ -104,6 +105,7 @@ const getUserDetails = async (req, res) => {
             address: user.address,
             role: user.role,
             avgStoreRating,
+            totalStores: user.role === 'OWNER' ? user.stores.length : undefined,
         });
 
     } catch (err) {
