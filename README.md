@@ -1,9 +1,23 @@
 # 🏪 Store App
+🌐 Live App URL:
+🔗 https://store-ratings-app.onrender.com
 
 A role-based full-stack store management web application using Node.js, Express, React, Prisma, and PostgreSQL.
 Login Details for Testing every roles is below in the file. 
 ---
-## 📁 Project Structure
+
+## API Base URL Configuration
+
+The frontend automatically sets the API base URL depending on where it is running:
+
+- **Local Development:**  
+  Uses `http://localhost:5000/api` as the backend API base URL.
+
+- **Production:**  
+  Uses `https://store-ratings-app.onrender.com/api` as the backend API base URL.
+
+This is determined dynamically in the frontend code by checking the current hostname
+## 📁 Project Structuree
 
 ```plaintext
 store_app-root/

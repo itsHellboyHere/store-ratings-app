@@ -8,7 +8,7 @@ const staticPath = path.join(__dirname, "../frontend/store-app/build");
 console.log("Serving static files from:", staticPath);
 // cors
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:5000']
+    origin: ['http://localhost:3000', 'http://localhost:5000', 'https://store-ratings-app.onrender.com']
 
 }));
 // middleware to parse to JSONs
