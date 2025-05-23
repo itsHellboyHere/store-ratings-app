@@ -97,7 +97,7 @@ const UserStoreList = () => {
                                         }
                                     }}
                                     disabled={currentPage === 1}
-                                    className='bg-gray-200 border rounded py-2 px-2 disabled:opacity-45'
+                                    className='bg-gray-200 border rounded py-2 px-2 disabled:opacity-45 '
                                 >
                                     Prev
                                 </button>
