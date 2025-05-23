@@ -97,7 +97,7 @@ const UserStoreList = () => {
                                         }
                                     }}
                                     disabled={currentPage === 1}
-                                    className='bg-gray-100 border rounded py-2 px-2 disabled:opacity-45'
+                                    className='bg-gray-200 border rounded py-2 px-2 disabled:opacity-45'
                                 >
                                     Prev
                                 </button>
@@ -111,7 +111,7 @@ const UserStoreList = () => {
                                         }
                                     }}
                                     disabled={currentPage === totalPages}
-                                    className='py-2 px-2 rounded border bg-gray-100 disabled:opacity-45'
+                                    className='py-2 px-2 rounded border bg-gray-200 disabled:opacity-45'
                                 >
                                     Next
                                 </button>

@@ -1,0 +1,11 @@
+{
+    "name": "store-app-root",
+    "version": "1.0.0",
+    "scripts": {
+      "install-all": "",
+      "build": "npm install --prefix backend && npm install --prefix frontend/store-app && npm run build --prefix frontend/store-app",
+      "start": "node backend/server.js",
+      "dev": "nodemon backend/server.js"
+    }
+  }
+  

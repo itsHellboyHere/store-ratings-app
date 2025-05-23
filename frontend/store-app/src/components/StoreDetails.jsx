@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom';
 import { renderStars } from "../utils/star"
 import { useAuthContext } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 const StoreDetails = () => {
     const [store, setStore] = useState(null)
     const [userRating, setUserRating] = useState('');
@@ -10,6 +11,7 @@ const StoreDetails = () => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null);
     const { authUser } = useAuthContext()
+    const [submitting, setSubmitting] = useState(false);
     const fetchStoreDetails = async () => {
         try {
             setLoading(true)
@@ -37,14 +39,15 @@ const StoreDetails = () => {
 
     const handleRatingSubmit = async () => {
         try {
-            setLoading(true)
+            setSubmitting(true)
             setError("")
-            await axios.post(`/stores/${id}/rate`, { score: Number(userRating) });
+            const res = await axios.post(`/stores/${id}/rate`, { score: Number(userRating) });
             fetchStoreDetails();
+            toast.success(res.data.message)
         } catch (err) {
             setError(err.response?.data?.error)
         } finally {
-            setLoading(false)
+            setSubmitting(false)
         }
     }
     if (loading) return (
@@ -58,6 +61,7 @@ const StoreDetails = () => {
                 ))}
             </div>
         </main>)
+    if (error) return <p className='text-red-600 text-sm '>{error}</p>
     if (!store) return <p>Store not found</p>;
     return (
         <main className="max-w-2xl mx-auto p-6">
@@ -102,9 +106,10 @@ const StoreDetails = () => {
                     />
                     <button
                         onClick={handleRatingSubmit}
-                        className="ml-4 bg-blue-600 text-white px-4 py-1 rounded"
+                        className="ml-4 bg-blue-600 text-white px-4 py-1 rounded disabled:opacity-60"
+                        disabled={submitting}
                     >
-                        {store.userRating ? 'Update Rating' : 'Submit Rating'}
+                        {submitting ? 'Submitting...' : (store.userRating ? 'Update Rating' : 'Submit Rating')}
                     </button>
                 </div>)}
             </div>
