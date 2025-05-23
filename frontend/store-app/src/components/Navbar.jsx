@@ -40,8 +40,8 @@ const Navbar = () => {
                 <div className="hidden md:flex gap-6 items-center">
                     {authUser ? (
                         <>
-                            <span className="capitalize text-sm bg-white px-2 py-1 rounded border font-mono ">
-                                Role: {authUser.role}
+                            <span className="text-sm bg-gray-100 px-3 py-1 rounded border w-fit capitalize">
+                                Hello, {authUser.name} ({authUser.role})
                             </span>
                             {authUser.role === 'ADMIN' && (
                                 <>
@@ -75,10 +75,14 @@ const Navbar = () => {
             {menuOpen && (
                 <div className="md:hidden flex flex-col gap-4 mt-3 px-2">
                     {authUser ? (
+
                         <>
-                            <span className="capitalize text-sm bg-gray-100 px-2 py-1 rounded border w-fit">
-                                Role: {authUser.role}
+                            <span className="text-sm bg-white px-3 py-1 rounded border font-mono capitalize">
+                                Hello, {authUser.name} ({authUser.role})
                             </span>
+                            {/* <span className="capitalize text-sm bg-gray-100 px-2 py-1 rounded border w-fit">
+                                Role: {authUser.role}
+                            </span> */}
                             {authUser.role === 'ADMIN' && (
                                 <>
                                     <Link to="/admin/users" onClick={toggleMenu} className='font-semibold'>Users</Link>
